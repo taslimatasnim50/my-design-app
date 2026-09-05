@@ -2,327 +2,248 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Pro Design Studio - পিক্সেল ল্যাব স্টাইল অ্যাপ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PixelLab Mobile Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Noto Sans Bengali', sans-serif; background: #1a1a1a; color: white; height: 100vh; overflow: hidden; user-select: none; }
+body { font-family: 'Hind Siliguri', sans-serif; background: #18191a; color: #ffffff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
 /* টপ বার */
-.topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #2c2c2c; border-bottom: 1px solid #444; height: 50px; }
-.topbar h1 { font-size: 16px; font-weight: 600; }
-.icon-btn { background: none; border: none; color: white; font-size: 18px; padding: 8px; cursor: pointer; border-radius: 4px; }
-.icon-btn:hover { background: #444; }
+.topbar { height: 48px; background: #242526; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid #3a3b3c; z-index: 10; }
+.topbar h1 { font-size: 15px; font-weight: 600; color: #e4e6eb; }
+.topbar-actions { display: flex; gap: 8px; }
+.icon-btn { background: #3a3b3c; border: none; color: #e4e6eb; font-size: 15px; padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: inherit; }
+.icon-btn:active { background: #4e4f50; }
+.btn-save { background: #2e7d32; color: white; }
 
-/* ক্যানভাস এরিয়া */
-.canvas-container { position: relative; height: calc(100vh - 220px); background: #404040; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: linear-gradient(45deg, #353535 25%, transparent 25%), linear-gradient(-45deg, #353535 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #353535 75%), linear-gradient(-45deg, transparent 75%, #353535 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, 10px 0px; }
-#mainCanvas { max-width: 100%; max-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+/* ক্যানভাস এরিয়া */
+.canvas-wrapper { flex: 1; position: relative; background: #121212; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; }
+#mainCanvas { max-width: 100%; max-height: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.6); background: #ffffff; }
+
+/* অপশন ড্রয়ার/প্যানেল */
+.panel-drawer { height: 210px; background: #242526; border-top: 1px solid #3a3b3c; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: none; }
+.panel-drawer.active { display: block; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #3a3b3c; font-size: 13px; font-weight: 600; color: #2e89ff; }
+.close-panel { background: none; border: none; color: #b0b3b8; font-size: 18px; cursor: pointer; }
+
+.ctrl-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 8px; }
+.ctrl-row label { font-size: 12px; color: #b0b3b8; min-width: 75px; }
+.ctrl-row input[type="text"], .ctrl-row textarea, .ctrl-row select { flex: 1; background: #3a3b3c; border: 1px solid #4e4f50; color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 12px; font-family: inherit; outline: none; }
+.ctrl-row input[type="range"] { flex: 1; accent-color: #2e89ff; }
+.ctrl-row input[type="color"] { width: 35px; height: 30px; border: none; border-radius: 4px; background: none; cursor: pointer; }
+.ctrl-row input[type="number"] { width: 60px; background: #3a3b3c; border: 1px solid #4e4f50; color: #fff; padding: 5px; border-radius: 6px; font-size: 12px; }
+
+.btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+.action-btn { background: #3a3b3c; border: 1px solid #4e4f50; color: #e4e6eb; padding: 7px 4px; font-size: 11px; border-radius: 6px; cursor: pointer; text-align: center; font-family: inherit; }
+.action-btn.active { background: #2e89ff; border-color: #2e89ff; color: #fff; }
 
 /* বটম টুলবার */
-.toolbar { display: flex; background: #2c2c2c; border-top: 1px solid #444; height: 60px; }
-.tool { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border-right: 1px solid #444; padding: 4px; }
-.tool:last-child { border-right: none; }
-.tool.active { background: #007bff; }
-.tool-icon { font-size: 18px; margin-bottom: 2px; }
-.tool-label { font-size: 10px; }
+.bottom-tabs { height: 55px; background: #1c1e21; display: flex; border-top: 1px solid #3a3b3c; z-index: 10; }
+.tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #b0b3b8; cursor: pointer; font-size: 11px; gap: 2px; }
+.tab-item.active { color: #2e89ff; }
+.tab-icon { font-size: 16px; font-weight: bold; }
 
-/* প্রোপার্টি প্যানেল */
-.panel { position: fixed; bottom: 60px; left: 0; right: 0; background: #353535; border-top: 1px solid #555; max-height: 50vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.25s ease-out; padding: 15px; }
-.panel.open { transform: translateY(0); }
-.panel-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #555; }
-.row { display: flex; align-items: center; margin-bottom: 12px; gap: 10px; }
-.row label { font-size: 12px; min-width: 70px; color: #ccc; }
-input[type="text"], textarea, select { background: #1a1a1a; border: 1px solid #555; color: white; padding: 8px 10px; border-radius: 4px; flex: 1; font-size: 13px; }
-input[type="range"] { flex: 1; height: 30px; }
-input[type="color"] { width: 40px; height: 30px; border: none; background: none; cursor: pointer; }
-input[type="number"] { background: #1a1a1a; border: 1px solid #555; color: white; padding: 6px 8px; border-radius: 4px; width: 60px; font-size: 13px; }
-input[type="checkbox"] { width: 18px; height: 18px; }
-
-/* বাটন স্টাইল */
-.btn { background: #007bff; border: none; color: white; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; }
-.btn:hover { background: #0069d9; }
-.btn-secondary { background: #6c757d; }
-.btn-secondary:hover { background: #5a6268; }
-.btn-danger { background: #dc3545; }
-.btn-danger:hover { background: #c82333; }
-.btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-.btn-group .btn { flex: 1; min-width: 80px; }
-
-/* লেয়ার প্যানেল */
-.layer-item { display: flex; align-items: center; background: #2c2c2c; padding: 8px 10px; margin-bottom: 5px; border-radius: 4px; cursor: pointer; border: 1px solid transparent; }
-.layer-item.selected { border-color: #007bff; }
-.layer-icon { margin-right: 8px; }
-.layer-name { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.layer-vis { background: none; border: none; color: #ccc; cursor: pointer; padding: 4px; }
-
-/* মডাল */
-.modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-.modal.open { display: flex; }
-.modal-box { background: #2c2c2c; padding: 20px; border-radius: 8px; max-width: 400px; width: 100%; }
-.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 15px; }
-
-/* রেসপন্সিভ */
-@media (max-width: 480px) {
-  .canvas-container { height: calc(100vh - 200px); }
-  .tool-label { font-size: 9px; }
-  .tool-icon { font-size: 16px; }
-  .row label { min-width: 60px; font-size: 11px; }
-}
-
-/* টাচ ইন্টারফেস */
-.touch-handle { position: absolute; width: 12px; height: 12px; background: #007bff; border: 2px solid white; border-radius: 50%; z-index: 10; }
+/* লেয়ার পপআপ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 15px; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #242526; width: 100%; max-width: 360px; border-radius: 10px; border: 1px solid #3a3b3c; padding: 14px; max-height: 80vh; display: flex; flex-direction: column; }
+.modal-header { font-size: 14px; font-weight: 600; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #3a3b3c; display: flex; justify-content: space-between; }
+.layer-list { overflow-y: auto; flex: 1; max-height: 250px; margin-bottom: 10px; }
+.layer-item { display: flex; align-items: center; justify-content: space-between; background: #3a3b3c; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; font-size: 12px; cursor: pointer; border: 1px solid transparent; }
+.layer-item.active { border-color: #2e89ff; background: #2f3542; }
 </style>
 </head>
 <body>
 
-<!-- টপ বার -->
 <div class="topbar">
-  <button class="icon-btn" onclick="toggleLayers()">☰</button>
-  <h1>Pro Design Studio</h1>
-  <button class="icon-btn" onclick="saveImage()">💾</button>
+  <div class="topbar-actions">
+    <button class="icon-btn" onclick="openLayersModal()">☰ লেয়ার</button>
+    <button class="icon-btn" onclick="deleteSelected()" style="color:#ff6b6b;">🗑 মুছুন</button>
+  </div>
+  <h1>PixelLab Studio</h1>
+  <button class="icon-btn btn-save" onclick="saveImage()">💾 সেভ</button>
 </div>
 
-<!-- ক্যানভাস এরিয়া -->
-<div class="canvas-container" id="canvasContainer">
-  <canvas id="mainCanvas" width="800" height="800"></canvas>
-</div>
-
-<!-- বটম টুলবার -->
-<div class="toolbar">
-  <div class="tool active" onclick="setTool('text')">
-    <div class="tool-icon">T</div>
-    <div class="tool-label">টেক্সট</div>
-  </div>
-  <div class="tool" onclick="setTool('shape')">
-    <div class="tool-icon">⬜</div>
-    <div class="tool-label">শেপ</div>
-  </div>
-  <div class="tool" onclick="setTool('image')">
-    <div class="tool-icon">🖼</div>
-    <div class="tool-label">ছবি</div>
-  </div>
-  <div class="tool" onclick="setTool('table')">
-    <div class="tool-icon">⊞</div>
-    <div class="tool-label">টেবিল</div>
-  </div>
-  <div class="tool" onclick="setTool('bg')">
-    <div class="tool-icon">🎨</div>
-    <div class="tool-label">ব্যাকগ্রাউন্ড</div>
-  </div>
+<div class="canvas-wrapper" id="canvasWrap">
+  <canvas id="mainCanvas" width="720" height="720"></canvas>
 </div>
 
 <!-- টেক্সট প্যানেল -->
-<div class="panel" id="textPanel">
-  <div class="panel-title">টেক্সট প্রোপার্টি</div>
-  <div class="row">
+<div class="panel-drawer active" id="textPanel">
+  <div class="panel-header">
+    <span>টেক্সট এডিটর ও ইফেক্ট</span>
+    <button class="close-panel" onclick="closeAllPanels()">✕</button>
+  </div>
+  <div class="btn-grid">
+    <button class="action-btn" onclick="addNewText()">+ নতুন টেক্সট</button>
+    <button class="action-btn" id="btnBold" onclick="toggleStyle('bold')">B বোল্ড</button>
+    <button class="action-btn" id="btnItalic" onclick="toggleStyle('italic')">I ইটালিক</button>
+    <button class="action-btn" id="btnUnderline" onclick="toggleStyle('underline')">U দাগ</button>
+  </div>
+  <div class="ctrl-row">
     <label>লেখা:</label>
-    <textarea id="textContent" rows="2" placeholder="আপনার লেখা এখানে লিখুন" oninput="updateSelectedText()">আপনার লেখা</textarea>
+    <textarea id="inpText" rows="1" oninput="updateTextProp()"></textarea>
   </div>
-  <div class="row">
-    <label>ফন্ট সাইজ:</label>
-    <input type="range" id="fontSize" min="10" max="200" value="40" oninput="updateSelectedText()">
-    <span id="fontSizeVal">40</span>
+  <div class="ctrl-row">
+    <label>সাইজ:</label>
+    <input type="range" id="inpFontSize" min="15" max="150" value="45" oninput="updateTextProp()">
+    <label>রং:</label>
+    <input type="color" id="inpTextColor" value="#ffffff" onchange="updateTextProp()">
   </div>
-  <div class="row">
-    <label>রঙ:</label>
-    <input type="color" id="textColor" value="#ffffff" onchange="updateSelectedText()">
+  <div class="ctrl-row">
+    <label>বাঁকানো (Curve):</label>
+    <input type="range" id="inpCurve" min="-180" max="180" value="0" oninput="updateTextProp()">
   </div>
-  <div class="row">
-    <label>বাঁক (°):</label>
-    <input type="range" id="textCurve" min="-180" max="180" value="0" oninput="updateSelectedText()">
-    <span id="textCurveVal">0</span>
+  <div class="ctrl-row">
+    <label>৩D ইফেক্ট:</label>
+    <input type="range" id="inp3d" min="0" max="15" value="0" oninput="updateTextProp()">
+    <label>৩D রং:</label>
+    <input type="color" id="inp3dColor" value="#000000" onchange="updateTextProp()">
   </div>
-  <div class="row">
-    <label>লেটার স্পেস:</label>
-    <input type="range" id="letterSpace" min="-10" max="30" value="0" oninput="updateSelectedText()">
-    <span id="letterSpaceVal">0</span>
+  <div class="ctrl-row">
+    <label>স্ট্রোক / আউটলাইন:</label>
+    <input type="range" id="inpStroke" min="0" max="15" value="0" oninput="updateTextProp()">
+    <input type="color" id="inpStrokeColor" value="#000000" onchange="updateTextProp()">
   </div>
-  <div class="row">
+  <div class="ctrl-row">
+    <label>শ্যাডো (ছায়া):</label>
+    <input type="range" id="inpShadow" min="0" max="25" value="0" oninput="updateTextProp()">
+    <input type="color" id="inpShadowColor" value="#000000" onchange="updateTextProp()">
+  </div>
+  <div class="ctrl-row">
     <label>ফন্ট:</label>
-    <select id="fontFamily" onchange="updateSelectedText()">
-      <option value="Arial">Arial</option>
-      <option value="Georgia">Georgia</option>
-      <option value="Courier New">Courier</option>
-      <option value="Impact">Impact</option>
-      <option value="Verdana">Verdana</option>
-      <option value="Noto Sans Bengali">বাংলা</option>
-      <option value="Times New Roman">Times</option>
+    <select id="inpFontFamily" onchange="updateTextProp()">
+      <option value="'Hind Siliguri', sans-serif">বাংলা ফন্ট (Hind Siliguri)</option>
+      <option value="Arial, sans-serif">Arial</option>
+      <option value="Impact, sans-serif">Impact (Bold)</option>
+      <option value="Georgia, serif">Georgia</option>
     </select>
-  </div>
-  <div class="row">
-    <label>স্টাইল:</label>
-    <button class="btn btn-secondary" onclick="toggleBold()" id="boldBtn"><b>B</b></button>
-    <button class="btn btn-secondary" onclick="toggleItalic()" id="italicBtn"><i>I</i></button>
-    <button class="btn btn-secondary" onclick="toggleUnderline()" id="underlineBtn"><u>U</u></button>
   </div>
 </div>
 
 <!-- শেপ প্যানেল -->
-<div class="panel" id="shapePanel">
-  <div class="panel-title">শেপ প্রোপার্টি</div>
-  <div class="btn-group">
-    <button class="btn" onclick="addShape('rect')">আয়তক্ষেত্র</button>
-    <button class="btn" onclick="addShape('circle')">বৃত্ত</button>
-    <button class="btn" onclick="addShape('triangle')">ত্রিভুজ</button>
-    <button class="btn" onclick="addShape('line')">লাইন</button>
+<div class="panel-drawer" id="shapePanel">
+  <div class="panel-header">
+    <span>শেপ টুল</span>
+    <button class="close-panel" onclick="closeAllPanels()">✕</button>
   </div>
-  <div class="row" style="margin-top: 12px;">
-    <label>ফিল রঙ:</label>
-    <input type="color" id="shapeFill" value="#007bff" onchange="updateSelectedShape()">
+  <div class="btn-grid">
+    <button class="action-btn" onclick="addShape('rect')">আয়তক্ষেত্র</button>
+    <button class="action-btn" onclick="addShape('circle')">বৃত্ত</button>
+    <button class="action-btn" onclick="addShape('triangle')">ত্রিভুজ</button>
   </div>
-  <div class="row">
-    <label>বর্ডার:</label>
-    <input type="color" id="shapeStroke" value="#ffffff" onchange="updateSelectedShape()">
-    <input type="number" id="shapeStrokeWidth" value="2" min="0" max="50" onchange="updateSelectedShape()">
+  <div class="ctrl-row">
+    <label>ভিতরের রং:</label>
+    <input type="color" id="inpShapeFill" value="#2e89ff" onchange="updateShapeProp()">
   </div>
-  <div class="row">
-    <label>অপাসিটি:</label>
-    <input type="range" id="shapeOpacity" min="0" max="100" value="100" oninput="updateSelectedShape()">
-  </div>
-</div>
-
-<!-- ইফেক্ট প্যানেল (টেক্সট এর জন্য 3D, শ্যাডো) -->
-<div class="panel" id="effectPanel">
-  <div class="panel-title">টেক্সট ইফেক্ট (পিক্সেল ল্যাব স্টাইল)</div>
-  <div class="row">
-    <label>৩D গভীরতা:</label>
-    <input type="range" id="depth3d" min="0" max="20" value="0" oninput="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>৩D কালার:</label>
-    <input type="color" id="color3d" value="#000000" onchange="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>শ্যাডো X:</label>
-    <input type="range" id="shadowX" min="-20" max="20" value="2" oninput="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>শ্যাডো Y:</label>
-    <input type="range" id="shadowY" min="-20" max="20" value="2" oninput="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>শ্যাডো ব্লার:</label>
-    <input type="range" id="shadowBlur" min="0" max="20" value="2" oninput="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>শ্যাডো রঙ:</label>
-    <input type="color" id="shadowColor" value="#000000" onchange="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>স্ট্রোক:</label>
-    <input type="number" id="strokeWidth" value="0" min="0" max="20" onchange="updateTextEffect()">
-    <input type="color" id="strokeColor" value="#000000" onchange="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>গ্রেডিয়েন্ট:</label>
-    <input type="checkbox" id="useGradient" onchange="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>রঙ ১:</label>
-    <input type="color" id="gradColor1" value="#ff0000" onchange="updateTextEffect()">
-  </div>
-  <div class="row">
-    <label>রঙ ২:</label>
-    <input type="color" id="gradColor2" value="#0000ff" onchange="updateTextEffect()">
+  <div class="ctrl-row">
+    <label>বর্ডার রং:</label>
+    <input type="color" id="inpShapeStroke" value="#ffffff" onchange="updateShapeProp()">
+    <label>বর্ডার সাইজ:</label>
+    <input type="number" id="inpShapeStrokeW" value="2" min="0" max="20" onchange="updateShapeProp()">
   </div>
 </div>
 
-<!-- টেবিল প্যানেল (বোনাস টুল) -->
-<div class="panel" id="tablePanel">
-  <div class="panel-title">টেবিল/ছক টুল (বোনাস ফিচার)</div>
-  <div class="row">
-    <label>রো সংখ্যা:</label>
-    <input type="number" id="tableRows" value="3" min="1" max="20">
+<!-- টেবিল/ছক প্যানেল -->
+<div class="panel-drawer" id="tablePanel">
+  <div class="panel-header">
+    <span>টেবিল / ছক টুল</span>
+    <button class="close-panel" onclick="closeAllPanels()">✕</button>
   </div>
-  <div class="row">
-    <label>কলাম সংখ্যা:</label>
-    <input type="number" id="tableCols" value="3" min="1" max="10">
+  <div class="ctrl-row">
+    <label>সারি (Rows):</label>
+    <input type="number" id="inpRows" value="3" min="1" max="10">
+    <label>কলাম (Cols):</label>
+    <input type="number" id="inpCols" value="3" min="1" max="6">
   </div>
-  <div class="row">
-    <label>সেল প্যাডিং:</label>
-    <input type="range" id="cellPadding" min="0" max="30" value="8">
+  <div class="ctrl-row">
+    <label>হেডার রং:</label>
+    <input type="color" id="inpTableHeadBg" value="#2e89ff">
+    <label>বডি রং:</label>
+    <input type="color" id="inpTableBodyBg" value="#ffffff">
   </div>
-  <div class="row">
-    <label>বর্ডার:</label>
-    <input type="number" id="tableBorder" value="1" min="0" max="10">
+  <div class="ctrl-row">
+    <label>লেখা রং:</label>
+    <input type="color" id="inpTableText" value="#000000">
+    <label>বর্ডার রং:</label>
+    <input type="color" id="inpTableBorder" value="#333333">
   </div>
-  <div class="row">
-    <label>বর্ডার রঙ:</label>
-    <input type="color" id="tableBorderColor" value="#000000">
-  </div>
-  <div class="row">
-    <label>হেডার ব্যাকগ্রাউন্ড:</label>
-    <input type="color" id="tableHeaderBg" value="#007bff">
-  </div>
-  <div class="row">
-    <label>হেডার টেক্সট:</label>
-    <input type="color" id="tableHeaderColor" value="#ffffff">
-  </div>
-  <div class="row">
-    <label>বডি ব্যাকগ্রাউন্ড:</label>
-    <input type="color" id="tableBodyBg" value="#ffffff">
-  </div>
-  <div class="row">
-    <label>টেক্সট রঙ:</label>
-    <input type="color" id="tableBodyColor" value="#000000">
-  </div>
-  <div class="btn-group">
-    <button class="btn" onclick="addTable()">টেবিল যোগ করুন</button>
-    <button class="btn btn-secondary" onclick="editTableData()">ডাটা এডিট</button>
+  <div class="btn-grid" style="grid-template-columns: 1fr 1fr; margin-top: 8px;">
+    <button class="action-btn active" onclick="addNewTable()">+ টেবিল বসান</button>
+    <button class="action-btn" onclick="openTableEditModal()">টেক্সট এডিট</button>
   </div>
 </div>
 
 <!-- ব্যাকগ্রাউন্ড প্যানেল -->
-<div class="panel" id="bgPanel">
-  <div class="panel-title">ব্যাকগ্রাউন্ড</div>
-  <div class="row">
-    <label>রঙ:</label>
-    <input type="color" id="bgColor" value="#ffffff" onchange="changeBackground()">
+<div class="panel-drawer" id="bgPanel">
+  <div class="panel-header">
+    <span>ক্যানভাস সাইজ ও ব্যাকগ্রাউন্ড</span>
+    <button class="close-panel" onclick="closeAllPanels()">✕</button>
   </div>
-  <div class="row">
-    <label>গ্রেডিয়েন্ট:</label>
-    <input type="checkbox" id="bgGradient" onchange="changeBackground()">
+  <div class="ctrl-row">
+    <label>রং:</label>
+    <input type="color" id="inpBgColor" value="#1e1e1e" onchange="updateCanvasBg()">
   </div>
-  <div class="row">
-    <label>রঙ ১:</label>
-    <input type="color" id="bgColor1" value="#ff7e5f" onchange="changeBackground()">
-  </div>
-  <div class="row">
-    <label>রঙ ২:</label>
-    <input type="color" id="bgColor2" value="#feb47b" onchange="changeBackground()">
-  </div>
-  <div class="row">
-    <label>ক্যানভাস সাইজ:</label>
-    <select id="canvasSize" onchange="changeCanvasSize()">
-      <option value="800x800">৮০০x৮০০ (বর্গ)</option>
-      <option value="1080x1080">১০৮০x১০৮০ (ইনস্টা)</option>
-      <option value="1280x720">১২৮০x৭২০ (YouTube)</option>
-      <option value="1920x1080">১৯২০x১০৮০ (Full HD)</option>
+  <div class="ctrl-row">
+    <label>সাইজ অনুপাত:</label>
+    <select id="inpCanvasRatio" onchange="changeCanvasRatio()">
+      <option value="1:1">১:১ (বর্গ - Instagram / Profile)</option>
+      <option value="16:9">১৬:৯ (YouTube থাম্বনেইল)</option>
+      <option value="9:16">৯:১৬ (Story / Reel)</option>
+      <option value="4:3">৪:৩ (পোস্টার)</option>
     </select>
   </div>
 </div>
 
-<!-- লেয়ার প্যানেল (মডাল হিসেবে) -->
-<div class="modal" id="layersModal">
-  <div class="modal-box">
-    <div class="modal-title">লেয়ার ম্যানেজার</div>
-    <div id="layersList"></div>
-    <div class="btn-group" style="margin-top: 15px;">
-      <button class="btn btn-danger" onclick="deleteSelected()">মুছুন</button>
-      <button class="btn btn-secondary" onclick="closeModal('layersModal')">বন্ধ</button>
-    </div>
+<!-- ছবি আপলোড ইনপুট -->
+<input type="file" id="fileImageInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+
+<!-- বটম বার -->
+<div class="bottom-tabs">
+  <div class="tab-item active" onclick="switchTab('textPanel', this)">
+    <span class="tab-icon">T</span>
+    <span>টেক্সট</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('shapePanel', this)">
+    <span class="tab-icon">⬜</span>
+    <span>শেপ</span>
+  </div>
+  <div class="tab-item" onclick="document.getElementById('fileImageInput').click()">
+    <span class="tab-icon">🖼</span>
+    <span>ছবি</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('tablePanel', this)">
+    <span class="tab-icon">⊞</span>
+    <span>ছক/টেবিল</span>
+  </div>
+  <div class="tab-item" onclick="switchTab('bgPanel', this)">
+    <span class="tab-icon">🎨</span>
+    <span>ব্যাকগ্রাউন্ড</span>
   </div>
 </div>
 
-<!-- টেবিল ডাটা এডিট মডাল -->
-<div class="modal" id="tableDataModal">
-  <div class="modal-box" style="max-width: 500px;">
-    <div class="modal-title">টেবিল ডাটা এডিট করুন</div>
-    <div id="tableDataInputs"></div>
-    <div class="btn-group" style="margin-top: 15px;">
-      <button class="btn" onclick="saveTableData()">সেভ করুন</button>
-      <button class="btn btn-secondary" onclick="closeModal('tableDataModal')">বাতিল</button>
+<!-- লেয়ার মডাল -->
+<div class="modal-overlay" id="layersModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>লেয়ার তালিকা</span>
+      <button class="close-panel" onclick="closeModal('layersModal')">✕</button>
     </div>
+    <div class="layer-list" id="layersList"></div>
+    <button class="action-btn" onclick="closeModal('layersModal')">ঠিক আছে</button>
+  </div>
+</div>
+
+<!-- টেবিল এডিট মডাল -->
+<div class="modal-overlay" id="tableEditModal">
+  <div class="modal-box" style="max-width: 400px;">
+    <div class="modal-header">
+      <span>টেবিল ডাটা এডিট</span>
+      <button class="close-panel" onclick="closeModal('tableEditModal')">✕</button>
+    </div>
+    <div class="layer-list" id="tableInputsContainer"></div>
+    <button class="action-btn active" onclick="saveTableContent()">সেভ করুন</button>
   </div>
 </div>
 
@@ -330,623 +251,461 @@ input[type="checkbox"] { width: 18px; height: 18px; }
 const canvas = document.getElementById('mainCanvas');
 const ctx = canvas.getContext('2d');
 
-// লেয়ার সিস্টেম
 let layers = [];
 let selectedLayer = null;
-let currentTool = 'text';
 let nextId = 1;
+let canvasBg = '#1e1e1e';
 let isDragging = false;
-let dragOffset = {x: 0, y: 0};
+let dragStart = { x: 0, y: 0 };
 
-// ক্যানভাস ইনিশিয়ালাইজ
-function init() {
-  changeBackground();
-  render();
+function switchTab(panelId, tabElem) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel-drawer').forEach(p => p.classList.remove('active'));
+  tabElem.classList.add('active');
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
 }
 
-// ব্যাকগ্রাউন্ড পরিবর্তন
-function changeBackground() {
-  const bg = document.getElementById('bgColor').value;
-  const useGrad = document.getElementById('bgGradient').checked;
-  const c1 = document.getElementById('bgColor1').value;
-  const c2 = document.getElementById('bgColor2').value;
-  
-  canvas.style.background = useGrad ? `linear-gradient(135deg, ${c1}, ${c2})` : bg;
-  render();
+function closeAllPanels() {
+  document.querySelectorAll('.panel-drawer').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
 }
 
-// ক্যানভাস সাইজ
-function changeCanvasSize() {
-  const size = document.getElementById('canvasSize').value;
-  const [w, h] = size.split('x').map(Number);
-  canvas.width = w;
-  canvas.height = h;
-  render();
-}
-
-// টুল সিলেক্ট
-function setTool(tool) {
-  currentTool = tool;
-  document.querySelectorAll('.tool').forEach(t => t.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  closeAllPanels();
-  
-  if (tool === 'text') openPanel('textPanel');
-  else if (tool === 'shape') openPanel('shapePanel');
-  else if (tool === 'image') document.getElementById('imageInput').click();
-  else if (tool === 'table') openPanel('tablePanel');
-  else if (tool === 'bg') openPanel('bgPanel');
-}
-
-function openPanel(id) { document.getElementById(id).classList.add('open'); }
-function closeAllPanels() { document.querySelectorAll('.panel').forEach(p => p.classList.remove('open')); }
-
-// টেক্সট যোগ
-function addText() {
+function addNewText() {
   const layer = {
     id: nextId++,
     type: 'text',
-    x: canvas.width/2 - 100,
-    y: canvas.height/2,
+    x: canvas.width / 2 - 100,
+    y: canvas.height / 2,
     text: 'আপনার লেখা',
-    fontSize: 40,
+    fontSize: 45,
     color: '#ffffff',
-    fontFamily: 'Arial',
+    fontFamily: "'Hind Siliguri', sans-serif",
     bold: false,
     italic: false,
     underline: false,
     curve: 0,
-    letterSpace: 0,
     depth3d: 0,
     color3d: '#000000',
-    shadowX: 2,
-    shadowY: 2,
-    shadowBlur: 2,
-    shadowColor: '#000000',
-    strokeWidth: 0,
+    stroke: 0,
     strokeColor: '#000000',
-    useGradient: false,
-    gradColor1: '#ff0000',
-    gradColor2: '#0000ff'
+    shadow: 0,
+    shadowColor: '#000000'
   };
   layers.push(layer);
   selectedLayer = layer;
+  syncTextPanel();
   render();
-  updateLayersList();
-  openPanel('textPanel');
-  openPanel('effectPanel');
 }
 
-// টেক্সট আপডেট
-function updateSelectedText() {
+function syncTextPanel() {
   if (!selectedLayer || selectedLayer.type !== 'text') return;
-  selectedLayer.text = document.getElementById('textContent').value;
-  selectedLayer.fontSize = parseInt(document.getElementById('fontSize').value);
-  document.getElementById('fontSizeVal').textContent = selectedLayer.fontSize;
-  selectedLayer.color = document.getElementById('textColor').value;
-  selectedLayer.curve = parseInt(document.getElementById('textCurve').value);
-  document.getElementById('textCurveVal').textContent = selectedLayer.curve;
-  selectedLayer.letterSpace = parseInt(document.getElementById('letterSpace').value);
-  document.getElementById('letterSpaceVal').textContent = selectedLayer.letterSpace;
-  selectedLayer.fontFamily = document.getElementById('fontFamily').value;
-  render();
+  document.getElementById('inpText').value = selectedLayer.text;
+  document.getElementById('inpFontSize').value = selectedLayer.fontSize;
+  document.getElementById('inpTextColor').value = selectedLayer.color;
+  document.getElementById('inpCurve').value = selectedLayer.curve;
+  document.getElementById('inp3d').value = selectedLayer.depth3d;
+  document.getElementById('inp3dColor').value = selectedLayer.color3d;
+  document.getElementById('inpStroke').value = selectedLayer.stroke;
+  document.getElementById('inpStrokeColor').value = selectedLayer.strokeColor;
+  document.getElementById('inpShadow').value = selectedLayer.shadow;
+  document.getElementById('inpShadowColor').value = selectedLayer.shadowColor;
+  document.getElementById('inpFontFamily').value = selectedLayer.fontFamily;
 }
 
-// ইফেক্ট আপডেট
-function updateTextEffect() {
+function updateTextProp() {
   if (!selectedLayer || selectedLayer.type !== 'text') return;
-  selectedLayer.depth3d = parseInt(document.getElementById('depth3d').value);
-  selectedLayer.color3d = document.getElementById('color3d').value;
-  selectedLayer.shadowX = parseInt(document.getElementById('shadowX').value);
-  selectedLayer.shadowY = parseInt(document.getElementById('shadowY').value);
-  selectedLayer.shadowBlur = parseInt(document.getElementById('shadowBlur').value);
-  selectedLayer.shadowColor = document.getElementById('shadowColor').value;
-  selectedLayer.strokeWidth = parseInt(document.getElementById('strokeWidth').value);
-  selectedLayer.strokeColor = document.getElementById('strokeColor').value;
-  selectedLayer.useGradient = document.getElementById('useGradient').checked;
-  selectedLayer.gradColor1 = document.getElementById('gradColor1').value;
-  selectedLayer.gradColor2 = document.getElementById('gradColor2').value;
+  selectedLayer.text = document.getElementById('inpText').value;
+  selectedLayer.fontSize = parseInt(document.getElementById('inpFontSize').value);
+  selectedLayer.color = document.getElementById('inpTextColor').value;
+  selectedLayer.curve = parseInt(document.getElementById('inpCurve').value);
+  selectedLayer.depth3d = parseInt(document.getElementById('inp3d').value);
+  selectedLayer.color3d = document.getElementById('inp3dColor').value;
+  selectedLayer.stroke = parseInt(document.getElementById('inpStroke').value);
+  selectedLayer.strokeColor = document.getElementById('inpStrokeColor').value;
+  selectedLayer.shadow = parseInt(document.getElementById('inpShadow').value);
+  selectedLayer.shadowColor = document.getElementById('inpShadowColor').value;
+  selectedLayer.fontFamily = document.getElementById('inpFontFamily').value;
   render();
 }
 
-// বোল্ড/ইটালিক/আন্ডারলাইন
-function toggleBold() {
-  if (!selectedLayer) return;
-  selectedLayer.bold = !selectedLayer.bold;
-  document.getElementById('boldBtn').style.background = selectedLayer.bold ? '#007bff' : '#6c757d';
-  render();
-}
-function toggleItalic() {
-  if (!selectedLayer) return;
-  selectedLayer.italic = !selectedLayer.italic;
-  document.getElementById('italicBtn').style.background = selectedLayer.italic ? '#007bff' : '#6c757d';
-  render();
-}
-function toggleUnderline() {
-  if (!selectedLayer) return;
-  selectedLayer.underline = !selectedLayer.underline;
-  document.getElementById('underlineBtn').style.background = selectedLayer.underline ? '#007bff' : '#6c757d';
+function toggleStyle(style) {
+  if (!selectedLayer || selectedLayer.type !== 'text') return;
+  selectedLayer[style] = !selectedLayer[style];
   render();
 }
 
-// শেপ যোগ
-function addShape(shapeType) {
+function addShape(type) {
   const layer = {
     id: nextId++,
     type: 'shape',
-    shapeType: shapeType,
-    x: canvas.width/2 - 75,
-    y: canvas.height/2 - 75,
-    width: 150,
-    height: 150,
-    fill: '#007bff',
-    stroke: '#ffffff',
-    strokeWidth: 2,
-    opacity: 1
+    shapeType: type,
+    x: canvas.width / 2 - 80,
+    y: canvas.height / 2 - 80,
+    width: 160,
+    height: 160,
+    fill: document.getElementById('inpShapeFill').value,
+    stroke: document.getElementById('inpShapeStroke').value,
+    strokeWidth: parseInt(document.getElementById('inpShapeStrokeW').value)
   };
   layers.push(layer);
   selectedLayer = layer;
   render();
-  updateLayersList();
-  openPanel('shapePanel');
 }
 
-function updateSelectedShape() {
+function updateShapeProp() {
   if (!selectedLayer || selectedLayer.type !== 'shape') return;
-  selectedLayer.fill = document.getElementById('shapeFill').value;
-  selectedLayer.stroke = document.getElementById('shapeStroke').value;
-  selectedLayer.strokeWidth = parseInt(document.getElementById('shapeStrokeWidth').value);
-  selectedLayer.opacity = parseInt(document.getElementById('shapeOpacity').value) / 100;
+  selectedLayer.fill = document.getElementById('inpShapeFill').value;
+  selectedLayer.stroke = document.getElementById('inpShapeStroke').value;
+  selectedLayer.strokeWidth = parseInt(document.getElementById('inpShapeStrokeW').value);
   render();
 }
 
-// ছবি যোগ
-function addImage(src) {
-  const img = new Image();
-  img.onload = function() {
-    const layer = {
-      id: nextId++,
-      type: 'image',
-      x: canvas.width/2 - img.width/4,
-      y: canvas.height/2 - img.height/4,
-      width: img.width/2,
-      height: img.height/2,
-      image: img
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const img = new Image();
+    img.onload = function() {
+      const scale = Math.min(300 / img.width, 300 / img.height, 1);
+      const layer = {
+        id: nextId++,
+        type: 'image',
+        x: canvas.width / 2 - (img.width * scale) / 2,
+        y: canvas.height / 2 - (img.height * scale) / 2,
+        width: img.width * scale,
+        height: img.height * scale,
+        img: img
+      };
+      layers.push(layer);
+      selectedLayer = layer;
+      render();
     };
-    layers.push(layer);
-    selectedLayer = layer;
-    render();
-    updateLayersList();
+    img.src = evt.target.result;
   };
-  img.src = src;
+  reader.readAsDataURL(file);
 }
 
-// ইনপুট ফাইল হ্যান্ডলার
-document.addEventListener('change', function(e) {
-  if (e.target.id === 'imageInput' && e.target.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(ev) { addImage(ev.target.result); };
-    reader.readAsDataURL(e.target.files[0]);
-  }
-});
-
-// টেবিল যোগ
-function addTable() {
-  const rows = parseInt(document.getElementById('tableRows').value);
-  const cols = parseInt(document.getElementById('tableCols').value);
-  const cellPad = parseInt(document.getElementById('cellPadding').value);
-  const border = parseInt(document.getElementById('tableBorder').value);
-  const borderColor = document.getElementById('tableBorderColor').value;
-  const headerBg = document.getElementById('tableHeaderBg').value;
-  const headerColor = document.getElementById('tableHeaderColor').value;
-  const bodyBg = document.getElementById('tableBodyBg').value;
-  const bodyColor = document.getElementById('tableBodyColor').value;
-  
-  const tableData = [];
+function addNewTable() {
+  const rows = parseInt(document.getElementById('inpRows').value) || 3;
+  const cols = parseInt(document.getElementById('inpCols').value) || 3;
+  const grid = [];
   for (let r = 0; r < rows; r++) {
     const row = [];
     for (let c = 0; c < cols; c++) {
-      row.push(r === 0 ? `হেডার ${c+1}` : `সেল ${r}.${c+1}`);
+      row.push(r === 0 ? `হেড ${c+1}` : `ডাটা`);
     }
-    tableData.push(row);
+    grid.push(row);
   }
-  
   const layer = {
     id: nextId++,
     type: 'table',
-    x: 100,
-    y: 100,
-    width: 400,
-    height: 200,
+    x: 60,
+    y: canvas.height / 2 - 100,
+    width: canvas.width - 120,
+    height: 180,
     rows: rows,
     cols: cols,
-    data: tableData,
-    cellPadding: cellPad,
-    borderWidth: border,
-    borderColor: borderColor,
-    headerBg: headerBg,
-    headerColor: headerColor,
-    bodyBg: bodyBg,
-    bodyColor: bodyColor
+    data: grid,
+    headBg: document.getElementById('inpTableHeadBg').value,
+    bodyBg: document.getElementById('inpTableBodyBg').value,
+    textColor: document.getElementById('inpTableText').value,
+    borderColor: document.getElementById('inpTableBorder').value
   };
-  
   layers.push(layer);
   selectedLayer = layer;
   render();
-  updateLayersList();
-  closeAllPanels();
 }
 
-// টেবিল ডাটা এডিট
-function editTableData() {
+function openTableEditModal() {
   if (!selectedLayer || selectedLayer.type !== 'table') {
-    alert('আগে একটি টেবিল সিলেক্ট করুন');
+    alert('প্রথমে টেবিল লেয়ারটি সিলেক্ট করুন।');
     return;
   }
-  const container = document.getElementById('tableDataInputs');
-  container.innerHTML = '';
-  
+  const box = document.getElementById('tableInputsContainer');
+  box.innerHTML = '';
   for (let r = 0; r < selectedLayer.rows; r++) {
     const rowDiv = document.createElement('div');
     rowDiv.style.display = 'flex';
-    rowDiv.style.gap = '5px';
-    rowDiv.style.marginBottom = '8px';
-    
+    rowDiv.style.gap = '4px';
+    rowDiv.style.marginBottom = '6px';
     for (let c = 0; c < selectedLayer.cols; c++) {
       const input = document.createElement('input');
       input.type = 'text';
       input.value = selectedLayer.data[r][c];
-      input.id = `cell_${r}_${c}`;
+      input.id = `t_cell_${r}_${c}`;
       input.style.flex = '1';
-      input.placeholder = `${r+1},${c+1}`;
+      input.style.background = '#1c1e21';
+      input.style.border = '1px solid #4e4f50';
+      input.style.color = '#fff';
+      input.style.padding = '4px';
+      input.style.borderRadius = '4px';
+      input.style.fontSize = '12px';
       rowDiv.appendChild(input);
     }
-    container.appendChild(rowDiv);
+    box.appendChild(rowDiv);
   }
-  
-  openModal('tableDataModal');
+  openModal('tableEditModal');
 }
 
-function saveTableData() {
+function saveTableContent() {
+  if (!selectedLayer || selectedLayer.type !== 'table') return;
   for (let r = 0; r < selectedLayer.rows; r++) {
     for (let c = 0; c < selectedLayer.cols; c++) {
-      const input = document.getElementById(`cell_${r}_${c}`);
-      if (input) selectedLayer.data[r][c] = input.value;
+      const val = document.getElementById(`t_cell_${r}_${c}`).value;
+      selectedLayer.data[r][c] = val;
     }
   }
   render();
-  closeModal('tableDataModal');
+  closeModal('tableEditModal');
 }
 
-// রেন্ডার
+function updateCanvasBg() {
+  canvasBg = document.getElementById('inpBgColor').value;
+  render();
+}
+
+function changeCanvasRatio() {
+  const r = document.getElementById('inpCanvasRatio').value;
+  if (r === '1:1') { canvas.width = 720; canvas.height = 720; }
+  else if (r === '16:9') { canvas.width = 1280; canvas.height = 720; }
+  else if (r === '9:16') { canvas.width = 720; canvas.height = 1280; }
+  else if (r === '4:3') { canvas.width = 800; canvas.height = 600; }
+  render();
+}
+
 function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+  ctx.fillStyle = canvasBg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   layers.forEach(layer => {
     ctx.save();
-    if (layer.type === 'text') drawText(layer);
-    else if (layer.type === 'shape') drawShape(layer);
-    else if (layer.type === 'image') drawImage(layer);
-    else if (layer.type === 'table') drawTable(layer);
+    if (layer.type === 'text') drawTextLayer(layer);
+    else if (layer.type === 'shape') drawShapeLayer(layer);
+    else if (layer.type === 'image') drawImageLayer(layer);
+    else if (layer.type === 'table') drawTableLayer(layer);
     ctx.restore();
   });
-  
-  // সিলেকশন মার্কার
+
   if (selectedLayer) {
-    const bounds = getLayerBounds(selectedLayer);
-    ctx.strokeStyle = '#007bff';
+    const b = getBounds(selectedLayer);
+    ctx.strokeStyle = '#2e89ff';
     ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    ctx.strokeRect(bounds.x - 5, bounds.y - 5, bounds.width + 10, bounds.height + 10);
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(b.x - 4, b.y - 4, b.w + 8, b.h + 8);
     ctx.setLineDash([]);
   }
 }
 
-function drawText(layer) {
-  ctx.font = `${layer.italic ? 'italic ' : ''}${layer.bold ? 'bold ' : ''}${layer.fontSize}px ${layer.fontFamily}`;
+function drawTextLayer(l) {
+  ctx.font = `${l.italic ? 'italic ' : ''}${l.bold ? 'bold ' : ''}${l.fontSize}px ${l.fontFamily}`;
   ctx.textBaseline = 'middle';
-  
-  // ৩D ইফেক্ট
-  if (layer.depth3d > 0) {
-    for (let i = layer.depth3d; i > 0; i--) {
-      ctx.fillStyle = layer.color3d;
-      drawTextPath(layer, layer.x + i, layer.y + i, false);
+
+  if (l.depth3d > 0) {
+    ctx.fillStyle = l.color3d;
+    for (let i = 1; i <= l.depth3d; i++) {
+      renderCurvedText(l, l.x + i, l.y + i, false);
     }
   }
-  
-  // শ্যাডো
-  if (layer.shadowBlur > 0) {
-    ctx.shadowColor = layer.shadowColor;
-    ctx.shadowBlur = layer.shadowBlur;
-    ctx.shadowOffsetX = layer.shadowX;
-    ctx.shadowOffsetY = layer.shadowY;
+
+  if (l.shadow > 0) {
+    ctx.shadowColor = l.shadowColor;
+    ctx.shadowBlur = l.shadow;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
   }
-  
-  // স্ট্রোক
-  if (layer.strokeWidth > 0) {
-    ctx.strokeStyle = layer.strokeColor;
-    ctx.lineWidth = layer.strokeWidth;
-    drawTextPath(layer, layer.x, layer.y, true);
+
+  if (l.stroke > 0) {
+    ctx.strokeStyle = l.strokeColor;
+    ctx.lineWidth = l.stroke;
+    renderCurvedText(l, l.x, l.y, true);
   }
-  
-  // মেইন টেক্সট
-  if (layer.useGradient) {
-    const grad = ctx.createLinearGradient(layer.x, layer.y - layer.fontSize/2, layer.x, layer.y + layer.fontSize/2);
-    grad.addColorStop(0, layer.gradColor1);
-    grad.addColorStop(1, layer.gradColor2);
-    ctx.fillStyle = grad;
-  } else {
-    ctx.fillStyle = layer.color;
-  }
-  
-  drawTextPath(layer, layer.x, layer.y, false);
-  
-  // আন্ডারলাইন
-  if (layer.underline) {
-    const metrics = ctx.measureText(layer.text);
-    ctx.strokeStyle = layer.color;
+
+  ctx.fillStyle = l.color;
+  renderCurvedText(l, l.x, l.y, false);
+
+  if (l.underline) {
+    const w = ctx.measureText(l.text).width;
+    ctx.strokeStyle = l.color;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(layer.x, layer.y + layer.fontSize/2 + 5);
-    ctx.lineTo(layer.x + metrics.width, layer.y + layer.fontSize/2 + 5);
+    ctx.moveTo(l.x, l.y + l.fontSize / 2 + 4);
+    ctx.lineTo(l.x + w, l.y + l.fontSize / 2 + 4);
     ctx.stroke();
   }
-  
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
 }
 
-function drawTextPath(layer, x, y, stroke) {
-  if (layer.curve === 0) {
-    if (stroke) ctx.strokeText(layer.text, x, y);
-    else ctx.fillText(layer.text, x, y);
-  } else {
-    // বাঁকানো টেক্সট
-    const angle = (layer.curve * Math.PI) / 180;
-    const chars = layer.text.split('');
-    const totalWidth = ctx.measureText(layer.text).width;
-    const radius = totalWidth / angle;
-    let currentAngle = -angle/2;
-    
-    chars.forEach((char, i) => {
-      const charWidth = ctx.measureText(char).width;
-      const charAngle = (charWidth / totalWidth) * angle;
-      const px = x + Math.sin(currentAngle + charAngle/2) * radius;
-      const py = y - radius + Math.cos(currentAngle + charAngle/2) * radius;
-      
-      ctx.save();
-      ctx.translate(px, py);
-      ctx.rotate(-currentAngle - charAngle/2);
-      if (stroke) ctx.strokeText(char, 0, 0);
-      else ctx.fillText(char, 0, 0);
-      ctx.restore();
-      
-      currentAngle += charAngle;
-    });
+function renderCurvedText(l, x, y, isStroke) {
+  if (!l.curve || l.curve === 0) {
+    if (isStroke) ctx.strokeText(l.text, x, y);
+    else ctx.fillText(l.text, x, y);
+    return;
   }
+  const rad = (l.curve * Math.PI) / 180;
+  const chars = l.text.split('');
+  const totalW = ctx.measureText(l.text).width;
+  const radius = totalW / rad;
+  let currentAngle = -rad / 2;
+
+  chars.forEach(c => {
+    const w = ctx.measureText(c).width;
+    const a = (w / totalW) * rad;
+    const px = x + Math.sin(currentAngle + a / 2) * radius;
+    const py = y - radius + Math.cos(currentAngle + a / 2) * radius;
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(-currentAngle - a / 2);
+    if (isStroke) ctx.strokeText(c, 0, 0);
+    else ctx.fillText(c, 0, 0);
+    ctx.restore();
+    currentAngle += a;
+  });
 }
 
-function drawShape(layer) {
-  ctx.globalAlpha = layer.opacity;
-  ctx.fillStyle = layer.fill;
-  ctx.strokeStyle = layer.stroke;
-  ctx.lineWidth = layer.strokeWidth;
-  
+function drawShapeLayer(l) {
+  ctx.fillStyle = l.fill;
+  ctx.strokeStyle = l.stroke;
+  ctx.lineWidth = l.strokeWidth;
   ctx.beginPath();
-  if (layer.shapeType === 'rect') {
-    ctx.rect(layer.x, layer.y, layer.width, layer.height);
-  } else if (layer.shapeType === 'circle') {
-    ctx.arc(layer.x + layer.width/2, layer.y + layer.height/2, layer.width/2, 0, Math.PI*2);
-  } else if (layer.shapeType === 'triangle') {
-    ctx.moveTo(layer.x + layer.width/2, layer.y);
-    ctx.lineTo(layer.x + layer.width, layer.y + layer.height);
-    ctx.lineTo(layer.x, layer.y + layer.height);
+  if (l.shapeType === 'rect') {
+    ctx.rect(l.x, l.y, l.width, l.height);
+  } else if (l.shapeType === 'circle') {
+    ctx.arc(l.x + l.width / 2, l.y + l.height / 2, l.width / 2, 0, Math.PI * 2);
+  } else if (l.shapeType === 'triangle') {
+    ctx.moveTo(l.x + l.width / 2, l.y);
+    ctx.lineTo(l.x + l.width, l.y + l.height);
+    ctx.lineTo(l.x, l.y + l.height);
     ctx.closePath();
-  } else if (layer.shapeType === 'line') {
-    ctx.moveTo(layer.x, layer.y);
-    ctx.lineTo(layer.x + layer.width, layer.y + layer.height);
   }
-  
-  if (layer.shapeType === 'line') {
-    ctx.stroke();
-  } else {
-    ctx.fill();
-    if (layer.strokeWidth > 0) ctx.stroke();
-  }
-  
-  ctx.globalAlpha = 1;
+  ctx.fill();
+  if (l.strokeWidth > 0) ctx.stroke();
 }
 
-function drawImage(layer) {
-  ctx.drawImage(layer.image, layer.x, layer.y, layer.width, layer.height);
+function drawImageLayer(l) {
+  ctx.drawImage(l.img, l.x, l.y, l.width, l.height);
 }
 
-function drawTable(layer) {
-  const cellW = layer.width / layer.cols;
-  const cellH = layer.height / layer.rows;
-  
-  for (let r = 0; r < layer.rows; r++) {
-    for (let c = 0; c < layer.cols; c++) {
-      const x = layer.x + c * cellW;
-      const y = layer.y + r * cellH;
-      
-      // ব্যাকগ্রাউন্ড
-      ctx.fillStyle = r === 0 ? layer.headerBg : layer.bodyBg;
-      ctx.fillRect(x, y, cellW, cellH);
-      
-      // বর্ডার
-      if (layer.borderWidth > 0) {
-        ctx.strokeStyle = layer.borderColor;
-        ctx.lineWidth = layer.borderWidth;
-        ctx.strokeRect(x, y, cellW, cellH);
-      }
-      
-      // টেক্সট
-      ctx.fillStyle = r === 0 ? layer.headerColor : layer.bodyColor;
-      ctx.font = `bold ${Math.min(cellH * 0.3, 20)}px Arial`;
-      ctx.textBaseline = 'middle';
+function drawTableLayer(l) {
+  const cw = l.width / l.cols;
+  const ch = l.height / l.rows;
+  for (let r = 0; r < l.rows; r++) {
+    for (let c = 0; c < l.cols; c++) {
+      const cx = l.x + c * cw;
+      const cy = l.y + r * ch;
+      ctx.fillStyle = r === 0 ? l.headBg : l.bodyBg;
+      ctx.fillRect(cx, cy, cw, ch);
+      ctx.strokeStyle = l.borderColor;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(cx, cy, cw, ch);
+
+      ctx.fillStyle = l.textColor;
+      ctx.font = `bold ${Math.min(ch * 0.35, 16)}px 'Hind Siliguri', sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(layer.data[r][c] || '', x + cellW/2, y + cellH/2);
-      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(l.data[r][c] || '', cx + cw / 2, cy + ch / 2);
     }
   }
+  ctx.textAlign = 'left';
 }
 
-// লেয়ার বাউন্ডস
-function getLayerBounds(layer) {
-  if (layer.type === 'text') {
-    ctx.font = `${layer.italic ? 'italic ' : ''}${layer.bold ? 'bold ' : ''}${layer.fontSize}px ${layer.fontFamily}`;
-    const w = ctx.measureText(layer.text).width;
-    return { x: layer.x, y: layer.y - layer.fontSize/2, width: w, height: layer.fontSize };
-  } else if (layer.type === 'image' || layer.type === 'shape' || layer.type === 'table') {
-    return { x: layer.x, y: layer.y, width: layer.width, height: layer.height };
+function getBounds(l) {
+  if (l.type === 'text') {
+    ctx.font = `${l.fontSize}px ${l.fontFamily}`;
+    const w = ctx.measureText(l.text).width;
+    return { x: l.x, y: l.y - l.fontSize / 2, w: w, h: l.fontSize };
   }
-  return { x: 0, y: 0, width: 0, height: 0 };
+  return { x: l.x, y: l.y, w: l.width, h: l.height };
 }
 
-// মাউস/টাচ হ্যান্ডলার
-canvas.addEventListener('mousedown', startDrag);
-canvas.addEventListener('touchstart', startDragTouch, {passive: false});
-canvas.addEventListener('mousemove', drag);
-canvas.addEventListener('touchmove', dragTouch, {passive: false});
-canvas.addEventListener('mouseup', endDrag);
-canvas.addEventListener('touchend', endDrag);
-
-function getMousePos(e) {
+function getPos(e) {
   const rect = canvas.getBoundingClientRect();
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
   return {
-    x: (e.clientX - rect.left) * scaleX,
-    y: (e.clientY - rect.top) * scaleY
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
   };
 }
 
-function startDrag(e) {
-  const pos = getMousePos(e);
-  selectAt(pos.x, pos.y);
-  if (selectedLayer) {
-    isDragging = true;
-    dragOffset.x = pos.x - selectedLayer.x;
-    dragOffset.y = pos.y - selectedLayer.y;
-  }
-}
-
-function startDragTouch(e) {
-  e.preventDefault();
-  const touch = e.touches[0];
-  const pos = getMousePos(touch);
-  selectAt(pos.x, pos.y);
-  if (selectedLayer) {
-    isDragging = true;
-    dragOffset.x = pos.x - selectedLayer.x;
-    dragOffset.y = pos.y - selectedLayer.y;
-  }
-}
-
-function drag(e) {
-  if (!isDragging || !selectedLayer) return;
-  const pos = getMousePos(e);
-  selectedLayer.x = pos.x - dragOffset.x;
-  selectedLayer.y = pos.y - dragOffset.y;
-  render();
-}
-
-function dragTouch(e) {
-  if (!isDragging || !selectedLayer) return;
-  e.preventDefault();
-  const touch = e.touches[0];
-  const pos = getMousePos(touch);
-  selectedLayer.x = pos.x - dragOffset.x;
-  selectedLayer.y = pos.y - dragOffset.y;
-  render();
-}
-
-function endDrag() { isDragging = false; }
-
-function selectAt(x, y) {
-  // উপর থেকে নিচে চেক
+function onTouchStart(e) {
+  const p = getPos(e);
   for (let i = layers.length - 1; i >= 0; i--) {
-    const layer = layers[i];
-    const bounds = getLayerBounds(layer);
-    if (x >= bounds.x && x <= bounds.x + bounds.width && 
-        y >= bounds.y && y <= bounds.y + bounds.height) {
-      selectedLayer = layer;
-      updateLayersList();
+    const b = getBounds(layers[i]);
+    if (p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) {
+      selectedLayer = layers[i];
+      isDragging = true;
+      dragStart.x = p.x - selectedLayer.x;
+      dragStart.y = p.y - selectedLayer.y;
+      if (selectedLayer.type === 'text') syncTextPanel();
       render();
-      // প্রোপার্টি প্যানেল খোলা
-      if (layer.type === 'text') { openPanel('textPanel'); openPanel('effectPanel'); }
-      else if (layer.type === 'shape') openPanel('shapePanel');
-      else if (layer.type === 'table') openPanel('tablePanel');
       return;
     }
   }
   selectedLayer = null;
-  updateLayersList();
   render();
 }
 
-// লেয়ার লিস্ট
-function updateLayersList() {
-  const list = document.getElementById('layersList');
-  list.innerHTML = '';
-  layers.slice().reverse().forEach(layer => {
-    const div = document.createElement('div');
-    div.className = 'layer-item' + (layer === selectedLayer ? ' selected' : '');
-    div.onclick = () => { selectedLayer = layer; render(); updateLayersList(); };
-    div.innerHTML = `
-      <span class="layer-icon">${layer.type === 'text' ? 'T' : layer.type === 'shape' ? '⬜' : layer.type === 'image' ? '🖼' : '⊞'}</span>
-      <span class="layer-name">${layer.type === 'text' ? layer.text : layer.type + ' ' + layer.id}</span>
-    `;
-    list.appendChild(div);
-  });
+function onTouchMove(e) {
+  if (!isDragging || !selectedLayer) return;
+  const p = getPos(e);
+  selectedLayer.x = p.x - dragStart.x;
+  selectedLayer.y = p.y - dragStart.y;
+  render();
 }
 
-function toggleLayers() {
-  updateLayersList();
-  openModal('layersModal');
-}
+function onTouchEnd() { isDragging = false; }
+
+canvas.addEventListener('mousedown', onTouchStart);
+canvas.addEventListener('mousemove', onTouchMove);
+window.addEventListener('mouseup', onTouchEnd);
+
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); onTouchStart(e); }, { passive: false });
+canvas.addEventListener('touchmove', (e) => { e.preventDefault(); onTouchMove(e); }, { passive: false });
+window.addEventListener('touchend', onTouchEnd);
 
 function deleteSelected() {
-  if (selectedLayer) {
-    layers = layers.filter(l => l !== selectedLayer);
-    selectedLayer = null;
-    render();
-    updateLayersList();
-    closeModal('layersModal');
-  }
+  if (!selectedLayer) return;
+  layers = layers.filter(l => l.id !== selectedLayer.id);
+  selectedLayer = null;
+  render();
+}
+
+function openLayersModal() {
+  const box = document.getElementById('layersList');
+  box.innerHTML = '';
+  layers.slice().reverse().forEach(l => {
+    const d = document.createElement('div');
+    d.className = 'layer-item' + (l === selectedLayer ? ' active' : '');
+    d.innerHTML = `<span>${l.type === 'text' ? l.text : l.type}</span>`;
+    d.onclick = () => { selectedLayer = l; render(); openLayersModal(); };
+    box.appendChild(d);
+  });
+  openModal('layersModal');
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// ছবি সেভ
 function saveImage() {
-  // সিলেকশন মার্কার সরিয়ে রেন্ডার
   const temp = selectedLayer;
   selectedLayer = null;
   render();
-  
-  const link = document.createElement('a');
-  link.download = 'design-' + Date.now() + '.png';
-  link.href = canvas.toDataURL('image/png', 1.0);
-  link.click();
-  
+  const a = document.createElement('a');
+  a.download = 'pixellab-design.png';
+  a.href = canvas.toDataURL('image/png', 1.0);
+  a.click();
   selectedLayer = temp;
   render();
 }
 
-// ডিফল্ট টেক্সট
-function addDefaultText() {
-  addText();
-}
-
-// ইনিশিয়ালাইজ
-init();
-addDefaultText();
+// ডিফল্ট টেক্সট লোড
+document.fonts.ready.then(() => {
+  addNewText();
+});
 </script>
-
 </body>
 </html>
